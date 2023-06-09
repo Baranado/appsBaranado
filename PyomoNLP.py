@@ -1,0 +1,43 @@
+import pyomo.environ as pyo
+from pyomo.contrib.pynumero.interfaces.pyomo_nlp import PyomoNLP
+import numpy as np
+#defineoptimizationmodel
+m=pyo.ConcreteModel()
+m.x=pyo.Var([1,2,3],bounds=(0.0,None),initialize=3.0)
+m.c=pyo.Constraint(expr=m.x[3]**2+m.x[1]==25)
+m.d=pyo.Constraint(expr=m.x[2]**2+m.x[1]<=18.0)
+m.o=pyo.Objective(expr=m.x[1]**4-3*m.x[1]*m.x[2]**3+m.x[3]**2-8.0)
+#createNLP
+nlp=PyomoNLP(m)
+#Setvaluesofvariables
+nlp.set_primals(np.array([4,-1,3]))
+#accessingvariablevalues
+primals=nlp.get_primals()
+print("Valuesofprimalvariables:\n",primals)
+duals=nlp.get_duals()
+print("Valuesofdualvariables:\n",duals)
+#variablebounds
+primals_lb=nlp.primals_lb()
+primals_ub=nlp.primals_ub()
+print("Variablelowerbounds:\n",primals_lb)
+print("Variableupperbounds:\n",primals_ub)
+#NLPfunctionevaluations
+f=nlp.evaluate_objective()
+print("ObjectiveFunction\n",f)
+g=nlp.evaluate_constraints()
+print("Constraints\n",g)
+c=nlp.evaluate_eq_constraints()
+print("EqualityConstraints\n",c)
+d=nlp.evaluate_ineq_constraints()
+print("InequalityConstraints\n",d)
+#NLPfirstandsecond-orderderivatives
+df=nlp.evaluate_grad_objective()
+print("GradientofObjectiveFunction:\n",df)
+jac_g=nlp.evaluate_jacobian()
+print("JacobianofConstraints:\n",jac_g)
+jac_c=nlp.evaluate_jacobian_eq()
+print("JacobianofEqualityConstraints:\n",jac_c)
+jac_d=nlp.evaluate_jacobian_ineq()
+print("JacobianofInequalityConstraints:\n",jac_d)
+hess_lag=nlp.evaluate_hessian_lag()
+print("HessianofLagrangian\n",hess_lag)
