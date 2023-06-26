@@ -2,7 +2,7 @@
 #Materiales
 import math
 import section
-import struct
+import structAnalis as struct
 #Condiciones de diseño
 l=2500
 print(f"Luz simple de diseño: {l} cm")
